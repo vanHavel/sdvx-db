@@ -330,6 +330,60 @@ Each song occupies one visual row/card with 4 fixed chart columns:
 
 ---
 
+### Sub-Task 8 – Song Image Collection (Python scraping)
+
+**Goal:** Collect images to display alongside each song row, based on the song's unlock source.
+
+#### Image Sources
+
+| Unlock Source | Image Source | Details |
+|---|---|---|
+| `music_pack` | Konami eAmusement Mall | Song pack banner images from the mall page for SDVX. |
+| `default` | RemyWiki | Version logo for the song's `source_version`. |
+| `blaster_gate` | (same as `default`) | Uses the source version logo — no separate blaster gate image needed. |
+
+#### Image Size Requirements (reference: iidx-db)
+
+iidx-db uses 35 images at 364×60px, ~6-22KB each (.webp), totaling ~516KB. We should target similar sizes:
+- **Max dimensions:** ~400×80px
+- **Format:** `.webp` (lossy, quality ~80)
+- **Target size:** ≤15KB per image
+- **Total budget:** ~50 images × 15KB ≈ 750KB max
+
+#### Implementation
+
+- Python script (`python/collect_images.py`) that:
+  1. Downloads version logos from RemyWiki (6 images, one per version)
+  2. Downloads song pack banners from Konami Mall (38 images, one per pack)
+  3. Resizes all to consistent dimensions and converts to `.webp`
+  4. Saves to `web/public/img/`
+  5. Creates a mapping file (`web/public/img/image-mapping.json`) that maps `{music_pack_name, source_version}` → image filename
+- Run once as a setup step, images are committed to the repo
+
+#### Naming Convention
+
+```
+web/public/img/
+├── version_booth.webp
+├── version_infinite_infection.webp
+├── version_gravity_wars.webp
+├── version_heavenly_haven.webp
+├── version_vivid_wave.webp
+├── version_exceed_gear.webp
+├── pack_music_pack_vol_1.webp
+├── pack_music_pack_vol_2.webp
+├── ...
+└── pack_bemani_selection_vol_1.webp
+```
+
+#### Integration with Song Row
+
+Each song row will display a small image on the left side (like iidx-db's folder images). The image selection logic:
+- If `unlock_source == "music_pack"` → use the pack-specific banner
+- Otherwise (`default` or `blaster_gate`) → use the source version logo
+
+---
+
 ## Dependency Graph
 
 ```
@@ -339,17 +393,17 @@ Sub-Task 2 (Scaffold)    ────┤                              ├──�
                               │                              │                              │
                               ├──▶ Sub-Task 7 (Styling)  ──┤                              │
                               │                              │                              │
-                              └──▶ Sub-Task 6 (Radar)    ──┘                              │
-                                                                                           │
-                                                              Sub-Task 5 (Song Rows) ◀────┘
+                              ├──▶ Sub-Task 6 (Radar)    ──┘                              │
+                              │                                                             │
+Sub-Task 8 (Images)    ───────┘                               Sub-Task 5 (Song Rows) ◀────┘
 ```
 
 **Suggested execution order:**
-1. Sub-Task 1 (Data Pipeline) + Sub-Task 2 (Scaffold) — **parallel**
+1. Sub-Task 1 (Data Pipeline) + Sub-Task 2 (Scaffold) + Sub-Task 8 (Images) — **parallel**
 2. Sub-Task 3 (DB Layer) — depends on 1 + 2
 3. Sub-Task 7 (Styling) + Sub-Task 6 (Radar Charts) — **parallel**, after scaffold exists
 4. Sub-Task 4 (Search/Filter UI) — depends on 3 + 7
-5. Sub-Task 5 (Song Row Rendering) — depends on all above
+5. Sub-Task 5 (Song Row Rendering) — depends on all above + 8
 
 ---
 
@@ -361,10 +415,12 @@ Sub-Task 2 (Scaffold)    ────┤                              ├──�
 
 3. **Title sorting**: English-first alphabetical, then Japanese in katakana order. Implemented via a computed `sort_key` column in the DB.
 
-4. **Empty chart slots**: Show "—" or similar placeholder. All 5 columns always rendered.
+4. **Empty chart slots**: Show "—" or similar placeholder. All 4 columns always rendered.
 
 5. **Song pack filter**: Single dropdown with options: Default / Blaster Gate / then all 38 music pack names grouped under an `<optgroup>` labeled "Song Packs".
 
 6. **Source version**: Stored, displayed as a song attribute, and filterable via dropdown.
 
 7. **Chart slot model**: 4 UI columns (NOV/ADV/EXH/4th). The 4th column shows either MXM or a version-specific special difficulty (INF/GRV/HVN/VVD/XCD), whichever exists. No song in the current data has both, so we don't need to handle that case.
+
+8. **Song images**: Each song row shows a small image based on unlock source — song pack banner, blaster gate icon, or version logo. Images scraped from Konami Mall and RemyWiki.
