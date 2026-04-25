@@ -1,5 +1,12 @@
 # sdvx-db
-Sound Voltex Konasute Chart Database
+Sound Voltex Konasute Chart Database 
+
+[sdvx.directory](https://sdvx.directory) is currently live with the data for Konasute.
+
+# Obtaining the raw data 
+To obtain the raw song / chart info for Konasute, we use [v-flux](https://github.com/vanHavel/v-flux) which reads it from Konasute memory.
+
+The output is written to the file `songs.jsonl`. 
 
 # Generating the database
 To generate the database:
