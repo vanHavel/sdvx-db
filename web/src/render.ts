@@ -76,6 +76,7 @@ function renderSongRow(songId: number, song: Song | undefined, searchParams: Que
             <span class="song-bpm">${escapeHtml(bpm)}</span>
             <span class="song-version">${escapeHtml(song.source_version)}</span>
           </span>
+          ${renderUnlockBadge(song.unlock_source_code, song.music_pack_name)}
         </div>
       </div>
       <div class="chart-cells">
@@ -86,6 +87,19 @@ function renderSongRow(songId: number, song: Song | undefined, searchParams: Que
       </div>
     </div>
   `;
+}
+
+function renderUnlockBadge(unlockSourceCode: number, musicPackName?: string): string {
+  if (unlockSourceCode === 0) {
+    return '<span class="unlock-badge unlock-badge--default">Basic Course</span>';
+  }
+  if (unlockSourceCode === 2) {
+    return '<span class="unlock-badge unlock-badge--blaster">Blaster Gate</span>';
+  }
+  if (unlockSourceCode === 1 && musicPackName) {
+    return `<span class="unlock-badge unlock-badge--pack" title="${escapeAttribute(musicPackName)}">📦 ${escapeHtml(musicPackName)}</span>`;
+  }
+  return '';
 }
 
 function renderChartCell(

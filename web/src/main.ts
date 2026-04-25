@@ -149,16 +149,40 @@ for (const fieldId of ['title', 'artist', 'effector']) {
   });
 }
 
-document.getElementById('sort-direction')!.addEventListener('click', () => {
+function getSortLabels(field: string): [string, string] {
+  switch (field) {
+    case 'bpm':
+      return ['↑ Lowest', '↓ Highest'];
+    case 'release_date':
+      return ['↑ Oldest', '↓ Newest'];
+    default:
+      return ['↑ First', '↓ Last'];
+  }
+}
+
+function updateSortButton(): void {
   const button = document.getElementById('sort-direction') as HTMLButtonElement;
-  const nextDirection = button.dataset.direction === 'asc' ? 'desc' : 'asc';
-  button.dataset.direction = nextDirection;
-  button.textContent = nextDirection === 'asc' ? '▲' : '▼';
+  const field = getSelectValue('order');
+  const direction = button.dataset.direction ?? 'asc';
+  const [ascLabel, descLabel] = getSortLabels(field);
+  button.textContent = direction === 'asc' ? ascLabel : descLabel;
   button.setAttribute(
     'aria-label',
-    `Sort ${nextDirection === 'asc' ? 'ascending' : 'descending'}`,
+    `Sort ${direction === 'asc' ? ascLabel : descLabel}`,
   );
+}
+
+document.getElementById('sort-direction')!.addEventListener('click', () => {
+  const button = document.getElementById('sort-direction') as HTMLButtonElement;
+  button.dataset.direction = button.dataset.direction === 'asc' ? 'desc' : 'asc';
+  updateSortButton();
 });
+
+document.getElementById('order')!.addEventListener('change', () => {
+  updateSortButton();
+});
+
+updateSortButton();
 
 document.getElementById('first-page')!.addEventListener('click', async () => {
   page = 1;

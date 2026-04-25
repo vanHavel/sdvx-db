@@ -6,19 +6,19 @@ type RadarAxis = {
   angle: number;
 };
 
-const CANVAS_SIZE = 160;
-const CSS_SIZE = 80;
+const CANVAS_SIZE = 240;
+const CSS_SIZE = 120;
 const CENTER = CANVAS_SIZE / 2;
 const RADAR_BOUNDARY_VALUE = 10000;
-const HEX_RADIUS = 36;
+const HEX_RADIUS = 54;
 
 const AXES: RadarAxis[] = [
-  { key: 'notes', label: 'NOT', angle: -Math.PI / 2 },
-  { key: 'peak', label: 'PEK', angle: -Math.PI / 2 + Math.PI / 3 },
-  { key: 'tsumami', label: 'TSU', angle: -Math.PI / 2 + 2 * Math.PI / 3 },
-  { key: 'one_handed', label: 'ONE', angle: Math.PI / 2 },
-  { key: 'hand_trip', label: 'HND', angle: Math.PI / 2 + Math.PI / 3 },
-  { key: 'tricky', label: 'TRK', angle: Math.PI / 2 + 2 * Math.PI / 3 },
+  { key: 'notes', label: 'NOTES', angle: -Math.PI / 2 },
+  { key: 'peak', label: 'PEAK', angle: -Math.PI / 2 + Math.PI / 3 },
+  { key: 'tsumami', label: 'LASER', angle: -Math.PI / 2 + 2 * Math.PI / 3 },
+  { key: 'one_handed', label: '1HAND', angle: Math.PI / 2 },
+  { key: 'hand_trip', label: 'HTRIP', angle: Math.PI / 2 + Math.PI / 3 },
+  { key: 'tricky', label: 'TRICK', angle: Math.PI / 2 + 2 * Math.PI / 3 },
 ];
 
 export function drawRadar(canvas: HTMLCanvasElement, radar: Radar, color: string): void {
@@ -97,20 +97,29 @@ function drawDataPolygon(ctx: CanvasRenderingContext2D, radar: Radar, color: str
 }
 
 function drawAxisLabels(ctx: CanvasRenderingContext2D): void {
-  ctx.font = '16px Inter, system-ui, sans-serif';
+  ctx.font = '18px Inter, system-ui, sans-serif';
   ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  const labelValue = RADAR_BOUNDARY_VALUE * ((HEX_RADIUS + 16) / HEX_RADIUS);
+  const labelValue = RADAR_BOUNDARY_VALUE * ((HEX_RADIUS + 22) / HEX_RADIUS);
   for (const axis of AXES) {
     const [x, y] = getPoint(axis.angle, labelValue);
     ctx.fillText(axis.label, x, y);
   }
 }
 
+function valueToRadius(value: number): number {
+  if (value <= RADAR_BOUNDARY_VALUE) {
+    return (value / RADAR_BOUNDARY_VALUE) * HEX_RADIUS;
+  }
+  // Above 10k: growth rate is halved
+  const excess = value - RADAR_BOUNDARY_VALUE;
+  return HEX_RADIUS + (excess / RADAR_BOUNDARY_VALUE) * HEX_RADIUS * 0.5;
+}
+
 function getPoint(angle: number, value: number): [number, number] {
-  const radius = (value / RADAR_BOUNDARY_VALUE) * HEX_RADIUS;
+  const radius = valueToRadius(value);
   return [CENTER + radius * Math.cos(angle), CENTER + radius * Math.sin(angle)];
 }
 

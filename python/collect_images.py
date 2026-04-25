@@ -70,7 +70,7 @@ def download(url: str) -> bytes:
     return response.content
 
 
-def save_as_webp(raw: bytes, output_path: Path, max_width: int = 260, quality: int = 70) -> None:
+def save_as_webp(raw: bytes, output_path: Path, max_width: int = 300, quality: int = 80) -> None:
     image = Image.open(BytesIO(raw))
     image.load()
 
