@@ -139,8 +139,7 @@ function renderPopulatedChartCell(
 
   return `
     <div class="chart-cell ${difficultyClass} selected-${isSelected}">
-      <span class="chart-diff-label">${escapeHtml(abbreviation)}</span>
-      <span class="chart-level">${chart.level}</span>
+      <span class="chart-header">${escapeHtml(abbreviation)} ${chart.level}</span>
       <span class="chart-effector" title="${escapeAttribute(chart.effected_by)}">${escapeHtml(chart.effected_by)}</span>
       <span class="chart-exscore">EX ${formatExScore(chart.max_ex_score)}</span>
       <canvas class="chart-radar" id="radar-${songId}-${difficultyCode}" width="160" height="160"></canvas>
@@ -149,7 +148,7 @@ function renderPopulatedChartCell(
 }
 
 function renderEmptyChartCell(): string {
-  return '<div class="chart-cell chart-cell-empty"><span class="chart-diff-label">&mdash;</span></div>';
+  return '<div class="chart-cell chart-cell-empty"><span class="chart-header">&mdash;</span></div>';
 }
 
 function isChartSelected(chart: Chart, difficultyCode: number, searchParams: QueryParams): boolean {

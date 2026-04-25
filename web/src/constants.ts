@@ -120,7 +120,7 @@ export function getImagePath(
     4: 'vivid_wave',
     5: 'exceed_gear',
   };
-  return `/img/version_${versionSlugs[sourceVersion] ?? 'unknown'}.webp`;
+  return `/img/version_${versionSlugs[sourceVersion] ?? 'exceed_gear'}.webp`;
 }
 
 export const pageSize = 20;

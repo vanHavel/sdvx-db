@@ -378,18 +378,12 @@ button {
   transition: filter var(--transition-fast), opacity var(--transition-fast);
 }
 
-.chart-level {
-  font-size: 1.125rem;
+.chart-header {
+  font-size: 0.875rem;
   font-weight: 700;
-  line-height: 1.1;
-}
-
-.chart-diff-label {
-  color: var(--text-secondary);
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
+  margin-bottom: 2px;
 }
 
 .chart-effector {
@@ -423,55 +417,55 @@ button {
 .difficulty-nov {
   border-top: 3px solid var(--diff-nov);
 }
-.difficulty-nov .chart-level {
+.difficulty-nov .chart-header {
   color: var(--diff-nov);
 }
 .difficulty-adv {
   border-top: 3px solid var(--diff-adv);
 }
-.difficulty-adv .chart-level {
+.difficulty-adv .chart-header {
   color: var(--diff-adv);
 }
 .difficulty-exh {
   border-top: 3px solid var(--diff-exh);
 }
-.difficulty-exh .chart-level {
+.difficulty-exh .chart-header {
   color: var(--diff-exh);
 }
 .difficulty-inf {
   border-top: 3px solid var(--diff-inf);
 }
-.difficulty-inf .chart-level {
+.difficulty-inf .chart-header {
   color: var(--diff-inf);
 }
 .difficulty-grv {
   border-top: 3px solid var(--diff-grv);
 }
-.difficulty-grv .chart-level {
+.difficulty-grv .chart-header {
   color: var(--diff-grv);
 }
 .difficulty-hvn {
   border-top: 3px solid var(--diff-hvn);
 }
-.difficulty-hvn .chart-level {
+.difficulty-hvn .chart-header {
   color: var(--diff-hvn);
 }
 .difficulty-vvd {
   border-top: 3px solid var(--diff-vvd);
 }
-.difficulty-vvd .chart-level {
+.difficulty-vvd .chart-header {
   color: var(--diff-vvd);
 }
 .difficulty-xcd {
   border-top: 3px solid var(--diff-xcd);
 }
-.difficulty-xcd .chart-level {
+.difficulty-xcd .chart-header {
   color: var(--diff-xcd);
 }
 .difficulty-mxm {
   border-top: 3px solid var(--diff-mxm);
 }
-.difficulty-mxm .chart-level {
+.difficulty-mxm .chart-header {
   color: var(--diff-mxm);
 }
 

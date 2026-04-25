@@ -4,6 +4,7 @@ type RadarAxis = {
   key: keyof Radar;
   label: string;
   angle: number;
+  color: string;
 };
 
 const CANVAS_SIZE = 240;
@@ -13,12 +14,12 @@ const RADAR_BOUNDARY_VALUE = 10000;
 const HEX_RADIUS = 54;
 
 const AXES: RadarAxis[] = [
-  { key: 'notes', label: 'NOTES', angle: -Math.PI / 2 },
-  { key: 'peak', label: 'PEAK', angle: -Math.PI / 2 + Math.PI / 3 },
-  { key: 'tsumami', label: 'LASER', angle: -Math.PI / 2 + 2 * Math.PI / 3 },
-  { key: 'one_handed', label: '1HAND', angle: Math.PI / 2 },
-  { key: 'hand_trip', label: 'HTRIP', angle: Math.PI / 2 + Math.PI / 3 },
-  { key: 'tricky', label: 'TRICK', angle: Math.PI / 2 + 2 * Math.PI / 3 },
+  { key: 'notes', label: 'NOTES', angle: -Math.PI / 2, color: '#00e5ff' },
+  { key: 'peak', label: 'PEAK', angle: -Math.PI / 6, color: '#ff2d55' },
+  { key: 'tsumami', label: 'TSUMAMI', angle: Math.PI / 6, color: '#ff00ff' },
+  { key: 'tricky', label: 'TRICKY', angle: Math.PI / 2, color: '#ffff00' },
+  { key: 'hand_trip', label: 'HAND TRIP', angle: 5 * Math.PI / 6, color: '#a855f7' },
+  { key: 'one_handed', label: 'ONE HAND', angle: 7 * Math.PI / 6, color: '#00ff00' },
 ];
 
 export function drawRadar(canvas: HTMLCanvasElement, radar: Radar, color: string): void {
@@ -35,7 +36,7 @@ export function drawRadar(canvas: HTMLCanvasElement, radar: Radar, color: string
   ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
   drawGrid(ctx);
-  drawDataPolygon(ctx, radar, color);
+  drawDataPolygon(ctx, radar);
   drawAxisLabels(ctx);
 }
 
@@ -76,7 +77,7 @@ function drawHexagon(
   ctx.stroke();
 }
 
-function drawDataPolygon(ctx: CanvasRenderingContext2D, radar: Radar, color: string): void {
+function drawDataPolygon(ctx: CanvasRenderingContext2D, radar: Radar): void {
   ctx.beginPath();
   AXES.forEach((axis, index) => {
     const [x, y] = getPoint(axis.angle, radar[axis.key]);
@@ -88,24 +89,41 @@ function drawDataPolygon(ctx: CanvasRenderingContext2D, radar: Radar, color: str
   });
   ctx.closePath();
 
-  ctx.fillStyle = colorWithAlpha(color, 0.25);
-  ctx.fill();
+  // Create a radial gradient: Natural Sea Blue -> Violet/Magenta leakage
+  // The transition starts earlier to allow violet to 'leak' inside the scope
+  const gradient = ctx.createRadialGradient(CENTER, CENTER, 0, CENTER, CENTER, HEX_RADIUS * 1.5);
+  gradient.addColorStop(0, 'rgba(0, 110, 255, 0.85)');    // Deep Sea Blue center
+  gradient.addColorStop(0.45, 'rgba(168, 85, 247, 0.9)'); // Violet leakage starts at 45%
+  gradient.addColorStop(0.75, 'rgba(236, 72, 153, 0.9)'); // Magenta transitions towards boundary
+  gradient.addColorStop(1, 'rgba(255, 0, 100, 0.9)');    // Deep Magenta extremities
 
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
+  ctx.fillStyle = gradient;
+  ctx.fill();
+  
+  // No stroke for in-game look
 }
 
 function drawAxisLabels(ctx: CanvasRenderingContext2D): void {
-  ctx.font = '18px Inter, system-ui, sans-serif';
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+  ctx.font = 'bold 15px Inter, system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  const labelValue = RADAR_BOUNDARY_VALUE * ((HEX_RADIUS + 22) / HEX_RADIUS);
+  const labelValue = RADAR_BOUNDARY_VALUE * ((HEX_RADIUS + 24) / HEX_RADIUS);
   for (const axis of AXES) {
     const [x, y] = getPoint(axis.angle, labelValue);
-    ctx.fillText(axis.label, x, y);
+    ctx.fillStyle = axis.color;
+    
+    const lines = axis.label.split(' ');
+    if (lines.length === 1) {
+      ctx.fillText(axis.label, x, y);
+    } else {
+      // Draw multi-line labels (like ONE HAND)
+      const lineHeight = 16;
+      const startY = y - (lineHeight * (lines.length - 1)) / 2;
+      lines.forEach((line, i) => {
+        ctx.fillText(line, x, startY + i * lineHeight);
+      });
+    }
   }
 }
 

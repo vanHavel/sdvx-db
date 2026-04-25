@@ -172,14 +172,22 @@ function updateSortButton(): void {
   );
 }
 
-document.getElementById('sort-direction')!.addEventListener('click', () => {
+document.getElementById('sort-direction')!.addEventListener('click', async () => {
   const button = document.getElementById('sort-direction') as HTMLButtonElement;
   button.dataset.direction = button.dataset.direction === 'asc' ? 'desc' : 'asc';
   updateSortButton();
+  
+  page = 1;
+  currentSort = getSortConfig();
+  await search();
 });
 
-document.getElementById('order')!.addEventListener('change', () => {
+document.getElementById('order')!.addEventListener('change', async () => {
   updateSortButton();
+  
+  page = 1;
+  currentSort = getSortConfig();
+  await search();
 });
 
 updateSortButton();

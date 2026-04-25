@@ -156,13 +156,19 @@ function buildQuery(params: QueryParams, returnCount: boolean, sort?: SortConfig
     WHERE 1=1`;
 
   if (hasText(params.title)) {
-    if (hasFtsText(params.title)) {
-      query += ` AND (s.title LIKE '%' || $titleLike || '%'
-        OR s.id IN (
-          SELECT rowid FROM song_search WHERE title MATCH $title
-        ))`;
+    if (isLettersOnly(params.title) && hasFtsText(params.title)) {
+      query += ` AND s.id IN (
+        SELECT rowid FROM song_search WHERE title MATCH $title
+      )`;
     } else {
-      query += ` AND s.title LIKE '%' || $titleLike || '%'`;
+      if (hasFtsText(params.title)) {
+        query += ` AND (s.title LIKE '%' || $titleLike || '%'
+          OR s.id IN (
+            SELECT rowid FROM song_search WHERE title MATCH $title
+          ))`;
+      } else {
+        query += ` AND s.title LIKE '%' || $titleLike || '%'`;
+      }
     }
   }
   if (hasFtsText(params.artist)) {
@@ -199,6 +205,11 @@ function buildQuery(params: QueryParams, returnCount: boolean, sort?: SortConfig
   return query;
 }
 
+function isLettersOnly(text: string | undefined): boolean {
+  if (!text) return false;
+  return /^[a-z\s]+$/i.test(text);
+}
+
 function buildBindParams(
   params: QueryParams,
   page: number,
@@ -207,7 +218,9 @@ function buildBindParams(
   const bind: Record<string, string | number> = {};
 
   if (hasText(params.title)) {
-    bind.$titleLike = params.title.trim();
+    if (!isLettersOnly(params.title)) {
+      bind.$titleLike = params.title.trim();
+    }
     if (hasFtsText(params.title)) {
       bind.$title = cleanFtsTerm(params.title);
     }
