@@ -1,0 +1,19 @@
+{
+  "name": "sdvx-db",
+  "version": "1.0.0",
+  "description": "SDVX Chart Database",
+  "type": "module",
+  "scripts": {
+    "dev": "python3 ../python/create_sqlite_db.py && npx vite",
+    "build": "python3 ../python/create_sqlite_db.py && npx vite build",
+    "serve": "npx vite preview",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@sqlite.org/sqlite-wasm": "^3.50.1-build1"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0",
+    "vite": "^6.3.5"
+  }
+}
