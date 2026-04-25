@@ -1,0 +1,6 @@
+[project]
+name = "sdvx-db-data-pipeline"
+version = "1.0.0"
+description = "Create SQLite DB artifacts for SDVX chart data."
+requires-python = ">=3.11"
+dependencies = []

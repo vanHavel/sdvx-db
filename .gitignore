@@ -1,1 +1,6 @@
 iidx-db/
+__pycache__/
+*.py[cod]
+python/data/
+web/public/db.sqlite3.gzipped
+web/public/initial-data.json
