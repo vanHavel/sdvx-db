@@ -97,17 +97,39 @@ button {
   padding: var(--space-xl) 0 var(--space-md);
 }
 
-#github-link {
+.header-links {
   position: absolute;
   top: var(--space-xl);
   right: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.sister-site-link {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color var(--transition-fast);
+}
+
+.sister-site-link:hover {
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
+}
+
+.github-link {
   color: var(--text-secondary);
   line-height: 0;
   transition: color var(--transition-fast);
 }
 
-#github-link:hover {
+.github-link:hover {
   color: var(--accent);
+  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4));
 }
 
 #site-header h1 {
