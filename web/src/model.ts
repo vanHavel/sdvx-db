@@ -9,6 +9,7 @@ export type Radar = {
 
 export type Chart = {
   difficulty: string;
+  difficultyCode?: number;
   level: number;
   effected_by: string;
   max_ex_score: number;
@@ -22,7 +23,9 @@ export type Song = {
   max_bpm: number;
   release_date: string;
   source_version: string;
+  source_version_code: number;
   unlock_source: string;
+  unlock_source_code: number;
   music_pack_name?: string;
   novice?: Chart;
   advanced?: Chart;
