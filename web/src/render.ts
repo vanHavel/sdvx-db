@@ -127,6 +127,8 @@ function renderPopulatedChartCell(
     <div class="chart-cell ${difficultyClass} selected-${isSelected}">
       <span class="chart-diff-label">${escapeHtml(abbreviation)}</span>
       <span class="chart-level">${chart.level}</span>
+      <span class="chart-effector" title="${escapeAttribute(chart.effected_by)}">${escapeHtml(chart.effected_by)}</span>
+      <span class="chart-exscore">EX ${formatExScore(chart.max_ex_score)}</span>
       <canvas class="chart-radar" id="radar-${songId}-${difficultyCode}" width="160" height="160"></canvas>
     </div>
   `;
@@ -154,6 +156,10 @@ function isChartSelected(chart: Chart, difficultyCode: number, searchParams: Que
 
 function formatBpm(value: number): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(1);
+}
+
+function formatExScore(value: number): string {
+  return value.toLocaleString('en-US');
 }
 
 function escapeHtml(value: string): string {

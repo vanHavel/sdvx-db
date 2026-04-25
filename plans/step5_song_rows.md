@@ -80,24 +80,32 @@ Each song row produces this DOM (matching the CSS classes defined in Step 7):
     <div class="chart-cell difficulty-nov selected-true">
       <span class="chart-diff-label">NOV</span>
       <span class="chart-level">5</span>
+      <span class="chart-effector">BING-WANG-FX</span>
+      <span class="chart-exscore">EX 1745</span>
       <canvas class="chart-radar" id="radar-42-0" width="160" height="160"></canvas>
     </div>
     <!-- ADV -->
     <div class="chart-cell difficulty-adv selected-true">
       <span class="chart-diff-label">ADV</span>
       <span class="chart-level">10</span>
+      <span class="chart-effector">TEK-A-RHYTHM</span>
+      <span class="chart-exscore">EX 2517</span>
       <canvas class="chart-radar" id="radar-42-1" width="160" height="160"></canvas>
     </div>
     <!-- EXH -->
     <div class="chart-cell difficulty-exh selected-true">
       <span class="chart-diff-label">EXH</span>
       <span class="chart-level">14</span>
+      <span class="chart-effector">TEK-A-RHYTHM-IX</span>
+      <span class="chart-exscore">EX 3402</span>
       <canvas class="chart-radar" id="radar-42-2" width="160" height="160"></canvas>
     </div>
     <!-- 4th slot (MXM in this case) -->
     <div class="chart-cell difficulty-mxm selected-true">
       <span class="chart-diff-label">MXM</span>
       <span class="chart-level">17</span>
+      <span class="chart-effector">TEK-A-RHYTHM-IX</span>
+      <span class="chart-exscore">EX 4210</span>
       <canvas class="chart-radar" id="radar-42-8" width="160" height="160"></canvas>
     </div>
   </div>
@@ -199,6 +207,8 @@ function renderChartCell(
     <div class="chart-cell ${cssClass} selected-${selected}">
       <span class="chart-diff-label">${abbr}</span>
       <span class="chart-level">${chart.level}</span>
+      <span class="chart-effector">${escapeHtml(chart.effected_by)}</span>
+      <span class="chart-exscore">EX ${chart.max_ex_score.toLocaleString()}</span>
       <canvas class="chart-radar" id="radar-${songId}-${difficultyCode}" width="160" height="160"></canvas>
     </div>`;
 }
@@ -227,6 +237,8 @@ function renderFourthChartCell(
     <div class="chart-cell ${cssClass} selected-${selected}">
       <span class="chart-diff-label">${abbr}</span>
       <span class="chart-level">${chart.level}</span>
+      <span class="chart-effector">${escapeHtml(chart.effected_by)}</span>
+      <span class="chart-exscore">EX ${chart.max_ex_score.toLocaleString()}</span>
       <canvas class="chart-radar" id="radar-${songId}-${diffCode}" width="160" height="160"></canvas>
     </div>`;
 }

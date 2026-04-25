@@ -307,12 +307,15 @@ The results container and individual song rows (built by `render.ts` in Sub-Task
   </div>
   <div class="chart-cells">
     <div class="chart-cell difficulty-nov">
+      <span class="chart-diff-label">NOV</span>
       <span class="chart-level">5</span>
+      <span class="chart-effector">BING-WANG-FX</span>
+      <span class="chart-exscore">EX 1,745</span>
       <canvas class="chart-radar" width="160" height="160"></canvas>
     </div>
     <div class="chart-cell difficulty-adv">...</div>
     <div class="chart-cell difficulty-exh">...</div>
-    <div class="chart-cell difficulty-fourth difficulty-mxm">...</div>
+    <div class="chart-cell difficulty-mxm">...</div>
   </div>
 </div>
 ```
@@ -417,6 +420,31 @@ The results container and individual song rows (built by `render.ts` in Sub-Task
 .chart-level {
   font-size: 1.125rem;
   font-weight: 700;
+}
+
+/* Difficulty label (e.g. NOV, MXM) */
+.chart-diff-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+/* Effector name */
+.chart-effector {
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Max EX score */
+.chart-exscore {
+  font-size: 0.625rem;
+  color: var(--text-muted);
 }
 
 /* Radar canvas */
