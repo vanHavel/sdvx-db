@@ -1,7 +1,7 @@
 import { getSongIds, getSongInfo, loadDatabase, loadInitialData } from './db';
 import type { QueryParams, SortConfig } from './db';
 import { musicPackNames, pageSize } from './constants';
-import { renderSongInfo } from './render';
+import { drawAllRadars, renderSongInfo } from './render';
 
 let page = 1;
 let maxPage = 1;
@@ -77,6 +77,7 @@ async function search(): Promise<void> {
       const { songIds, songInfo, totalCount } = await loadInitialData();
       maxPage = Math.max(Math.ceil(totalCount / pageSize), 1);
       results.innerHTML = renderSongInfo(songIds, songInfo, searchParams);
+      drawAllRadars(songIds, songInfo);
       updateNav(page, pageSize, totalCount);
       window.setTimeout(() => {
         void loadDatabase().catch((error) => console.error('Failed to load database', error));
@@ -88,6 +89,7 @@ async function search(): Promise<void> {
     maxPage = Math.max(Math.ceil(totalCount / pageSize), 1);
     const songInfo = await getSongInfo(songIds);
     results.innerHTML = renderSongInfo(songIds, songInfo, searchParams);
+    drawAllRadars(songIds, songInfo);
     updateNav(page, pageSize, totalCount);
   } catch (error) {
     console.error(error);

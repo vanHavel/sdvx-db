@@ -1,13 +1,7 @@
 import { difficultyAbbreviations, difficultyColors, getImagePath } from './constants';
 import type { QueryParams } from './db';
 import type { Chart, Song } from './model';
-
-const chartSlots: Array<keyof Pick<Song, 'novice' | 'advanced' | 'exhaust' | 'fourth'>> = [
-  'novice',
-  'advanced',
-  'exhaust',
-  'fourth',
-];
+import { drawRadar } from './radar';
 
 const difficultyClasses: Record<number, string> = {
   0: 'difficulty-nov',
@@ -30,14 +24,41 @@ export function renderSongInfo(
     return '<div class="no-results">No songs found.</div>';
   }
 
-  return songIds.map((songId) => renderSongRow(songInfo[songId], searchParams)).join('');
+  return songIds.map((songId) => renderSongRow(songId, songInfo[songId], searchParams)).join('');
 }
 
-function renderSongRow(song: Song | undefined, searchParams: QueryParams): string {
+export function drawAllRadars(songIds: number[], songInfo: Record<number, Song>): void {
+  for (const songId of songIds) {
+    const song = songInfo[songId];
+    if (!song) continue;
+
+    const slots: Array<[Chart | undefined, number]> = [
+      [song.novice, 0],
+      [song.advanced, 1],
+      [song.exhaust, 2],
+      [song.fourth, song.fourth?.difficultyCode ?? 8],
+    ];
+
+    for (const [chart, difficultyCode] of slots) {
+      if (!chart) continue;
+
+      const canvas = document.getElementById(
+        `radar-${songId}-${difficultyCode}`,
+      ) as HTMLCanvasElement | null;
+      if (!canvas) continue;
+
+      drawRadar(canvas, chart.radar, difficultyColors[difficultyCode] ?? '#eeeeee');
+    }
+  }
+}
+
+function renderSongRow(songId: number, song: Song | undefined, searchParams: QueryParams): string {
   if (!song) return '';
 
   const bpm =
-    song.min_bpm === song.max_bpm ? formatNumber(song.min_bpm) : `${formatNumber(song.min_bpm)}-${formatNumber(song.max_bpm)}`;
+    song.min_bpm === song.max_bpm
+      ? `BPM ${formatBpm(song.min_bpm)}`
+      : `BPM ${formatBpm(song.min_bpm)}-${formatBpm(song.max_bpm)}`;
   const imagePath = getImagePath(
     song.unlock_source_code,
     song.music_pack_name,
@@ -45,61 +66,94 @@ function renderSongRow(song: Song | undefined, searchParams: QueryParams): strin
   );
 
   return `
-    <article class="song-row">
+    <div class="song-row" data-song-id="${songId}">
       <div class="song-info">
         <img class="song-image" src="${escapeAttribute(imagePath)}" alt="" loading="lazy" />
         <div class="song-meta">
-          <div class="song-title">${escapeHtml(song.title)}</div>
-          <div class="song-artist">${escapeHtml(song.artist)}</div>
-          <div class="song-details">
-            <span>BPM ${escapeHtml(bpm)}</span>
-            <span>${escapeHtml(song.source_version)}</span>
-            <span>${escapeHtml(song.music_pack_name ?? song.unlock_source)}</span>
-          </div>
+          <span class="song-title">${escapeHtml(song.title)}</span>
+          <span class="song-artist">${escapeHtml(song.artist)}</span>
+          <span class="song-details">
+            <span class="song-bpm">${escapeHtml(bpm)}</span>
+            <span class="song-version">${escapeHtml(song.source_version)}</span>
+          </span>
         </div>
       </div>
       <div class="chart-cells">
-        ${chartSlots.map((slot) => renderChartCell(song[slot], searchParams)).join('')}
+        ${renderChartCell(songId, song.novice, 0, searchParams)}
+        ${renderChartCell(songId, song.advanced, 1, searchParams)}
+        ${renderChartCell(songId, song.exhaust, 2, searchParams)}
+        ${renderFourthChartCell(songId, song.fourth, searchParams)}
       </div>
-    </article>
-  `;
-}
-
-function renderChartCell(chart: Chart | undefined, searchParams: QueryParams): string {
-  if (!chart || chart.difficultyCode === undefined) {
-    return '<div class="chart-cell-empty" aria-label="No chart">-</div>';
-  }
-
-  const difficultyCode = chart.difficultyCode;
-  const isSelected = isChartSelected(chart, searchParams);
-  const difficultyClass = difficultyClasses[difficultyCode] ?? '';
-  const difficultyColor = difficultyColors[difficultyCode] ?? '#eeeeee';
-  const abbreviation = difficultyAbbreviations[difficultyCode] ?? chart.difficulty;
-
-  return `
-    <div class="chart-cell ${difficultyClass} selected-${isSelected}" style="--chart-color: ${escapeAttribute(difficultyColor)}">
-      <div class="chart-difficulty">${escapeHtml(abbreviation)}</div>
-      <div class="chart-level">Lv.${chart.level}</div>
-      <div class="chart-effector" title="${escapeAttribute(chart.effected_by)}">
-        ${escapeHtml(chart.effected_by)}
-      </div>
-      <div class="chart-score">EX ${chart.max_ex_score}</div>
     </div>
   `;
 }
 
-function isChartSelected(chart: Chart, searchParams: QueryParams): boolean {
-  if (searchParams.difficulty !== undefined && chart.difficultyCode !== searchParams.difficulty) {
+function renderChartCell(
+  songId: number,
+  chart: Chart | undefined,
+  difficultyCode: number,
+  searchParams: QueryParams,
+): string {
+  if (!chart) {
+    return renderEmptyChartCell();
+  }
+
+  return renderPopulatedChartCell(songId, chart, difficultyCode, searchParams);
+}
+
+function renderFourthChartCell(
+  songId: number,
+  chart: Chart | undefined,
+  searchParams: QueryParams,
+): string {
+  if (!chart || chart.difficultyCode === undefined) {
+    return renderEmptyChartCell();
+  }
+
+  return renderPopulatedChartCell(songId, chart, chart.difficultyCode, searchParams);
+}
+
+function renderPopulatedChartCell(
+  songId: number,
+  chart: Chart,
+  difficultyCode: number,
+  searchParams: QueryParams,
+): string {
+  const isSelected = isChartSelected(chart, difficultyCode, searchParams);
+  const difficultyClass = difficultyClasses[difficultyCode] ?? '';
+  const abbreviation = difficultyAbbreviations[difficultyCode] ?? chart.difficulty;
+
+  return `
+    <div class="chart-cell ${difficultyClass} selected-${isSelected}">
+      <span class="chart-diff-label">${escapeHtml(abbreviation)}</span>
+      <span class="chart-level">${chart.level}</span>
+      <canvas class="chart-radar" id="radar-${songId}-${difficultyCode}" width="160" height="160"></canvas>
+    </div>
+  `;
+}
+
+function renderEmptyChartCell(): string {
+  return '<div class="chart-cell chart-cell-empty"><span class="chart-diff-label">&mdash;</span></div>';
+}
+
+function isChartSelected(chart: Chart, difficultyCode: number, searchParams: QueryParams): boolean {
+  if (searchParams.difficulty === undefined && searchParams.level === undefined) {
+    return true;
+  }
+
+  if (searchParams.difficulty !== undefined && difficultyCode !== searchParams.difficulty) {
     return false;
   }
+
   if (searchParams.level !== undefined && chart.level !== searchParams.level) {
     return false;
   }
+
   return true;
 }
 
-function formatNumber(value: number): string {
-  return Number.isInteger(value) ? String(value) : String(value).replace(/\.0$/, '');
+function formatBpm(value: number): string {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1);
 }
 
 function escapeHtml(value: string): string {
