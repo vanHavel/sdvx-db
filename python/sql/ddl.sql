@@ -35,8 +35,7 @@ CREATE VIRTUAL TABLE IF NOT EXISTS song_search USING fts5(
   title,
   artist,
   effectors,
-  content='song',
-  content_rowid='id'
+  content=''
 );
 
 CREATE INDEX IF NOT EXISTS idx_chart_song ON chart (id_song);

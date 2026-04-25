@@ -144,8 +144,7 @@ function buildQuery(params: QueryParams, returnCount: boolean, sort?: SortConfig
   let query = returnCount ? 'SELECT COUNT(DISTINCT s.id) AS countSongs' : 'SELECT DISTINCT s.id';
 
   query += `
-    FROM song s
-    JOIN song_search ss ON s.id = ss.rowid`;
+    FROM song s`;
 
   const needsChartJoin = params.difficulty !== undefined || params.level !== undefined;
   if (needsChartJoin) {
