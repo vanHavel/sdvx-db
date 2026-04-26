@@ -1,0 +1,186 @@
+#search-panel {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-lg);
+  background: rgba(18, 18, 26, 0.92);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(8px);
+}
+
+#search-panel::before {
+  content: 'VOL-L';
+  position: absolute;
+  top: -30px;
+  left: -30px;
+  width: 100px;
+  height: 120px;
+  padding-bottom: 32px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  color: #e8e8f0;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  z-index: 10;
+  background:
+    radial-gradient(circle at 42px 42px, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 6px),
+    radial-gradient(circle at 56px 56px, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 6px),
+    radial-gradient(circle at 50px 50px, #ffffff 0%, #e0e0e0 4px, #cccccc 9px, #aaaaaa 13px, #333333 15px, transparent 16px),
+    radial-gradient(circle at 50px 50px, transparent 15px, #1a1a26 16px, #1a1a26 17px, transparent 18px),
+    radial-gradient(circle at 50px 50px, transparent 17px, rgba(255, 255, 255, 0.8) 18px, var(--laser-left) 20px, transparent 23px),
+    radial-gradient(circle at 50px 50px, var(--laser-left) 10px, var(--laser-left-glow) 20px, transparent 38px);
+  text-shadow: 0 0 6px var(--laser-left);
+}
+
+#search-panel::after {
+  content: 'VOL-R';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 100px;
+  height: 120px;
+  padding-bottom: 32px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  color: #e8e8f0;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  z-index: 10;
+  background:
+    radial-gradient(circle at 42px 42px, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 6px),
+    radial-gradient(circle at 56px 56px, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 6px),
+    radial-gradient(circle at 50px 50px, #ffffff 0%, #e0e0e0 4px, #cccccc 9px, #aaaaaa 13px, #333333 15px, transparent 16px),
+    radial-gradient(circle at 50px 50px, transparent 15px, #1a1a26 16px, #1a1a26 17px, transparent 18px),
+    radial-gradient(circle at 50px 50px, transparent 17px, rgba(255, 255, 255, 0.8) 18px, var(--laser-right) 20px, transparent 23px),
+    radial-gradient(circle at 50px 50px, var(--laser-right) 10px, var(--laser-right-glow) 20px, transparent 38px);
+  text-shadow: 0 0 6px var(--laser-right);
+}
+
+#search-heading,
+#search-form {
+  position: relative;
+  z-index: 1;
+}
+
+#search-heading {
+  margin-bottom: var(--space-md);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.search-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.search-row:last-child {
+  margin-bottom: 0;
+}
+
+.search-field {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.search-field label {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.search-field input,
+.search-field select {
+  width: 100%;
+  min-height: 40px;
+  padding: var(--space-sm) var(--space-md);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.search-field input:focus,
+.search-field select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.search-field input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-field select {
+  appearance: none;
+  padding-right: 32px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238888a0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.search-actions {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: var(--space-sm);
+}
+
+.sort-toggle,
+.search-button {
+  min-height: 40px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast),
+    box-shadow var(--transition-fast), color var(--transition-fast);
+}
+
+.sort-toggle {
+  width: 108px;
+  padding: var(--space-sm) var(--space-md);
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.sort-toggle:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+}
+
+.search-button {
+  flex: 1;
+  padding: var(--space-sm) var(--space-lg);
+  color: #ffffff;
+  font-weight: 600;
+  background: var(--accent);
+}
+
+.search-button:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 0 16px var(--accent-glow);
+}

@@ -1,0 +1,264 @@
+#results-section {
+  position: relative;
+  min-height: 120px;
+}
+
+#results-section::before,
+#results-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  z-index: -1;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+#results-section::before {
+  left: calc(var(--space-md) * -1);
+  background: linear-gradient(to bottom, transparent 0%, var(--laser-left) 15%, var(--laser-left) 85%, transparent 100%);
+  box-shadow: 0 0 24px 4px var(--laser-left-glow);
+}
+
+#results-section::after {
+  right: calc(var(--space-md) * -1);
+  background: linear-gradient(to bottom, transparent 0%, var(--laser-right) 15%, var(--laser-right) 85%, transparent 100%);
+  box-shadow: 0 0 24px 4px var(--laser-right-glow);
+}
+
+#results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.song-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  animation: fadeIn var(--transition-normal) ease-out both;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.song-row:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.song-info {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.song-image {
+  width: 150px;
+  height: auto;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  opacity: 0.85;
+}
+
+.song-meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.song-title,
+.song-artist {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.song-artist {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+}
+
+.song-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.unlock-badge {
+  display: inline-block;
+  max-width: 220px;
+  padding: 1px 6px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.unlock-badge--default {
+  color: #6ee7b7;
+  background: rgba(110, 231, 183, 0.08);
+  border: 1px solid rgba(110, 231, 183, 0.2);
+}
+
+.unlock-badge--blaster {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.unlock-badge--pack {
+  color: var(--accent-hover);
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.chart-cells {
+  display: grid;
+  grid-template-columns: repeat(4, 150px);
+  gap: var(--space-xs);
+}
+
+.chart-cell {
+  min-height: 112px;
+  padding: var(--space-xs);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-sm);
+  transition: filter var(--transition-fast), opacity var(--transition-fast);
+}
+
+.chart-header {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.chart-effector {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 0.6875rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart-exscore {
+  color: var(--text-muted);
+  font-size: 0.625rem;
+}
+
+.chart-radar {
+  width: 120px;
+  height: 120px;
+}
+
+.chart-cell-empty {
+  min-height: 112px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.difficulty-nov {
+  border-top: 3px solid var(--diff-nov);
+}
+
+.difficulty-nov .chart-header {
+  color: var(--diff-nov);
+}
+
+.difficulty-adv {
+  border-top: 3px solid var(--diff-adv);
+}
+
+.difficulty-adv .chart-header {
+  color: var(--diff-adv);
+}
+
+.difficulty-exh {
+  border-top: 3px solid var(--diff-exh);
+}
+
+.difficulty-exh .chart-header {
+  color: var(--diff-exh);
+}
+
+.difficulty-inf {
+  border-top: 3px solid var(--diff-inf);
+}
+
+.difficulty-inf .chart-header {
+  color: var(--diff-inf);
+}
+
+.difficulty-grv {
+  border-top: 3px solid var(--diff-grv);
+}
+
+.difficulty-grv .chart-header {
+  color: var(--diff-grv);
+}
+
+.difficulty-hvn {
+  border-top: 3px solid var(--diff-hvn);
+}
+
+.difficulty-hvn .chart-header {
+  color: var(--diff-hvn);
+}
+
+.difficulty-vvd {
+  border-top: 3px solid var(--diff-vvd);
+}
+
+.difficulty-vvd .chart-header {
+  color: var(--diff-vvd);
+}
+
+.difficulty-xcd {
+  border-top: 3px solid var(--diff-xcd);
+}
+
+.difficulty-xcd .chart-header {
+  color: var(--diff-xcd);
+}
+
+.difficulty-mxm {
+  border-top: 3px solid var(--diff-mxm);
+}
+
+.difficulty-mxm .chart-header {
+  color: var(--diff-mxm);
+}
+
+.chart-cell.selected-false {
+  opacity: 0.3;
+  filter: grayscale(0.5);
+}
