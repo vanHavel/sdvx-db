@@ -36,7 +36,7 @@ export function drawRadar(canvas: HTMLCanvasElement, radar: Radar, color: string
   ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
   drawGrid(ctx);
-  drawDataPolygon(ctx, radar);
+  drawDataPolygon(ctx, radar, color);
   drawAxisLabels(ctx);
 }
 
@@ -77,7 +77,7 @@ function drawHexagon(
   ctx.stroke();
 }
 
-function drawDataPolygon(ctx: CanvasRenderingContext2D, radar: Radar): void {
+function drawDataPolygon(ctx: CanvasRenderingContext2D, radar: Radar, color: string): void {
   ctx.beginPath();
   AXES.forEach((axis, index) => {
     const [x, y] = getPoint(axis.angle, radar[axis.key]);
@@ -89,18 +89,17 @@ function drawDataPolygon(ctx: CanvasRenderingContext2D, radar: Radar): void {
   });
   ctx.closePath();
 
-  // Create a radial gradient: Natural Sea Blue -> Violet/Magenta leakage
-  // The transition starts earlier to allow violet to 'leak' inside the scope
   const gradient = ctx.createRadialGradient(CENTER, CENTER, 0, CENTER, CENTER, HEX_RADIUS * 1.5);
-  gradient.addColorStop(0, 'rgba(0, 110, 255, 0.85)');    // Deep Sea Blue center
-  gradient.addColorStop(0.45, 'rgba(168, 85, 247, 0.9)'); // Violet leakage starts at 45%
-  gradient.addColorStop(0.75, 'rgba(236, 72, 153, 0.9)'); // Magenta transitions towards boundary
-  gradient.addColorStop(1, 'rgba(255, 0, 100, 0.9)');    // Deep Magenta extremities
+  gradient.addColorStop(0, colorWithAlpha(color, 0.88));
+  gradient.addColorStop(0.55, colorWithAlpha(color, 0.58));
+  gradient.addColorStop(1, colorWithAlpha(color, 0.18));
 
   ctx.fillStyle = gradient;
   ctx.fill();
-  
-  // No stroke for in-game look
+
+  ctx.strokeStyle = colorWithAlpha(color, 0.85);
+  ctx.lineWidth = 2;
+  ctx.stroke();
 }
 
 function drawAxisLabels(ctx: CanvasRenderingContext2D): void {
